@@ -27,9 +27,9 @@ datastore = "1.1.1"
 
 # Coroutines
 coroutines = "1.9.0"
+sshj = "0.41.0"
 
 # SSH
-arcshellSsh = "0.1.0"
 
 # Test
 junit = "4.13.2"
@@ -73,7 +73,6 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 
 # SSH
-arcshell-ssh = { group = "com.github.arcshell", name = "arcshell-ssh", version.ref = "arcshellSsh" }
 
 # Test
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -90,3 +89,14 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+# Gradle Plugins (для build-logic)
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-compose-gradle-plugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
+hilt-gradle-plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
+
+# SSH
+sshj-core = { group = "com.hierynomus", name = "sshj", version.ref = "sshj" }
+slf4j-android = { group = "org.slf4j", name = "slf4j-android", version = "2.0.16" }
