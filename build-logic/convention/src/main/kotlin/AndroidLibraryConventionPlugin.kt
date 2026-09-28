@@ -1,3 +1,4 @@
+import org.gradle.api.JavaVersion
 import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -14,9 +15,13 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<LibraryExtension> {
-                compileSdk = 34
+                compileSdk = 35
                 defaultConfig {
                     minSdk = 34
+                }
+
+                testOptions {
+                    unitTests.isReturnDefaultValues = true
                 }
                 compileOptions {
                     sourceCompatibility = JavaVersion.VERSION_17

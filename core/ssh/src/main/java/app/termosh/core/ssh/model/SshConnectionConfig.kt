@@ -12,6 +12,7 @@ data class SshConnectionConfig(
     val readTimeoutMs: Int = 30_000,
     val keepAliveIntervalSec: Int = 30,
     val proxyJump: ProxyJumpConfig? = null,
+    val useJumpCredentialsForTarget: Boolean = false,
 )
 
 data class ProxyJumpConfig(

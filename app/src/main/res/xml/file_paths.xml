@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <files-path name="sessions" path="sessions/" />
+    <files-path name="logs" path="logs/" />
+    <files-path name="audit" path="audit/" />
+    <cache-path name="cache" path="." />
+</paths>

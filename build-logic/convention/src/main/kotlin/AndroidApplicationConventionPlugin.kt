@@ -1,3 +1,4 @@
+import org.gradle.api.JavaVersion
 import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -14,7 +15,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<ApplicationExtension> {
-                compileSdk = 34
+                compileSdk = 35
                 defaultConfig {
                     minSdk = 34
                     targetSdk = 34

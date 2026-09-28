@@ -10,6 +10,7 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:security"))
+    implementation(project(":domain"))
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
@@ -18,4 +19,7 @@ dependencies {
     implementation(libs.slf4j.android)
     implementation(libs.bouncycastle.bcprov)
     implementation(libs.bouncycastle.bcpkix)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
 }

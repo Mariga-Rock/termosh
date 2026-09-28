@@ -26,3 +26,12 @@ release/
 keystore.properties
 *.jks
 *.keystore
+local.properties
+
+# Локальные бэкапы патч-скриптов
+.termosh-bk-*
+.termosh-backup*
+
+# Случайные файлы
+/A
+/index.html

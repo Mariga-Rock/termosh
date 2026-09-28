@@ -22,6 +22,7 @@ include(":domain")
 
 include(":core:common")
 include(":core:security")
+include(":core:licensing")
 include(":core:database")
 include(":core:datastore")
 include(":core:ssh")

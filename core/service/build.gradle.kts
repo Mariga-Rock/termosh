@@ -11,6 +11,8 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:ssh"))
     implementation(project(":core:mosh"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.datastore.preferences)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 }

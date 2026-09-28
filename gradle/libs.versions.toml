@@ -3,7 +3,7 @@
 agp = "8.7.0"
 kotlin = "2.1.0"
 ksp = "2.1.0-1.0.29"
-compileSdk = "34"
+compileSdk = "35"
 minSdk = "34"
 targetSdk = "34"
 
@@ -27,12 +27,17 @@ datastore = "1.1.1"
 
 # Coroutines
 coroutines = "1.9.0"
-sshj = "0.41.0"
+reorderable = "2.4.2"
 
 # SSH
+sshj = "0.41.0"
+
+# Crypto
+bouncycastle = "1.84"
 
 # Test
 junit = "4.13.2"
+orgjson = "20231013"
 mockk = "1.13.13"
 turbine = "1.2.0"
 androidxTestJunit = "1.2.1"
@@ -52,6 +57,7 @@ androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graph
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 # DI
@@ -73,13 +79,32 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 
 # SSH
+sshj-core = { group = "com.hierynomus", name = "sshj", version.ref = "sshj" }
+
+# Crypto
+bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
+bouncycastle-bcpkix = { group = "org.bouncycastle", name = "bcpkix-jdk18on", version.ref = "bouncycastle" }
 
 # Test
+sh-calvin-reorderable = { group = "sh.calvin.reorderable", name = "reorderable", version.ref = "reorderable" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestJunit" }
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+
+# Gradle Plugins (для build-logic)
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-compose-gradle-plugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
+hilt-gradle-plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
+
+slf4j-android = { group = "uk.uuid.slf4j", name = "slf4j-android", version = "2.0.16-0" }
+
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+
+orgjson = { group = "org.json", name = "json", version.ref = "orgjson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -89,14 +114,3 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-
-# Gradle Plugins (для build-logic)
-android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
-kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlin-compose-gradle-plugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
-ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
-hilt-gradle-plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
-
-# SSH
-sshj-core = { group = "com.hierynomus", name = "sshj", version.ref = "sshj" }
-slf4j-android = { group = "org.slf4j", name = "slf4j-android", version = "2.0.16" }
