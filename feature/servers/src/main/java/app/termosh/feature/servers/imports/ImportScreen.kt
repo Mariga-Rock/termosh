@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -99,7 +100,11 @@ fun ImportScreen(
             ) { Text("Импорт из ConnectBot (XML)") }
 
             if (state.status.isNotBlank()) {
-                Text(state.status, color = MaterialTheme.colorScheme.primary)
+                Text(
+                    text = state.status,
+                    color = if (state.success) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
             state.error?.let {
                 Text(it, color = MaterialTheme.colorScheme.error)
@@ -114,6 +119,12 @@ fun ImportScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
+            }
+            if (state.success) {
+                Button(
+                    onClick = onBack,
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text("К серверам") }
             }
         }
     }

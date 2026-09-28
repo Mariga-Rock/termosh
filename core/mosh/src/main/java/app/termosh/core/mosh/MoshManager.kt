@@ -39,10 +39,19 @@ class MoshManager @Inject constructor(
         columns: Int = 80,
         lines: Int = 24,
         sshPort: Int = 22,
+        useTmux: Boolean = false,
     ): MoshProcess = withContext(Dispatchers.IO) {
 
         // 1. Распаковать terminfo из assets в filesDir (один раз)
         val terminfoPath = copyTerminfoFromAssets()
+
+        // 1b. Проверяем tmux, если запрошены постоянные сессии
+        val hasTmux: Boolean = if (useTmux) {
+            val out = runCatching {
+                sshSession.exec("command -v tmux 2>/dev/null", timeoutSec = 5)
+            }.getOrDefault("")
+            out.trim().isNotEmpty()
+        } else false
 
         // 2. Запустить mosh-server на удалённой стороне
         val cmd = "mosh-server new -s -c 256 -l LANG=en_US.UTF-8"
@@ -93,6 +102,16 @@ class MoshManager @Inject constructor(
         )
 
         // 5. Проверка, что клиент не упал в первые 700 мс
+        // 4b. Если tmux включён и доступен — отправим attach-команду в PTY
+        if (useTmux && hasTmux) {
+            kotlinx.coroutines.delay(500)
+            runCatching {
+                val cmd = "tmux attach -t termosh 2>/dev/null || tmux new -s termosh\n"
+                pty.output.write(cmd.toByteArray(Charsets.UTF_8))
+                pty.output.flush()
+            }
+        }
+
         kotlinx.coroutines.delay(700)
         if (!pty.isAlive) {
             val err = runCatching {

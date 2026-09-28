@@ -17,6 +17,7 @@ import javax.inject.Inject
 data class ImportUiState(
     val busy: Boolean = false,
     val status: String = "",
+    val success: Boolean = false,
     val warnings: List<String> = emptyList(),
     val error: String? = null,
 )
@@ -50,15 +51,37 @@ class ImportViewModel @Inject constructor(
                     "connectbot" -> importer.importConnectBot(text)
                     else -> importer.importKnownHosts(text)
                 }
+                val anyImported = res.serversImported > 0 || res.knownHostsImported > 0
+                val statusText = if (anyImported) {
+                    val parts = buildList {
+                        if (res.serversImported > 0) {
+                            add("${res.serversImported} ${serverWord(res.serversImported)}")
+                        }
+                        if (res.knownHostsImported > 0) {
+                            add("${res.knownHostsImported} known_hosts")
+                        }
+                    }
+                    "Импортировано: " + parts.joinToString(", ")
+                } else {
+                    "Не найдено ни одного хоста или известного сервера.\n" +
+                        "Возможно, файл пустой или формат не распознан."
+                }
                 _state.value = _state.value.copy(
                     busy = false,
-                    status = "Импортировано: серверов ${res.serversImported}, known_hosts ${res.knownHostsImported}",
+                    status = statusText,
+                    success = anyImported,
                     warnings = res.warnings,
                 )
             } catch (t: Throwable) {
                 _state.value = _state.value.copy(busy = false, error = t.message ?: "Import failed")
             }
         }
+    }
+
+    private fun serverWord(n: Int): String = when {
+        n % 10 == 1 && n % 100 != 11 -> "сервер"
+        n % 10 in 2..4 && n % 100 !in 12..14 -> "сервера"
+        else -> "серверов"
     }
 
     fun clear() { _state.value = ImportUiState() }

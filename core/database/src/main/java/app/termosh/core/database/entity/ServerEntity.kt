@@ -42,6 +42,7 @@ data class ServerEntity(
     val lastUsedAt: Long? = null,
     val sortOrder: Int = 0,
     val useMosh: Boolean = false,
+    val useTmux: Boolean = false,
     val totpSecretId: String? = null,
     val useJumpCredentials: Boolean = false,
     val startupCommandsJson: String = "[]",

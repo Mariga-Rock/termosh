@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -187,8 +188,10 @@ fun KeysListScreen(
         when {
             state.loading -> CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(padding))
             state.keys.isEmpty() -> EmptyState(
-                title = "Ключей нет",
-                subtitle = "Нажми + чтобы сгенерировать",
+                icon = Icons.Default.VpnKey,
+                title = "SSH-ключей нет",
+                subtitle = "Сгенерируйте новый ключ (Ed25519, RSA, ECDSA) или " +
+                    "импортируйте существующий. Приватная часть шифруется Keystore.",
                 modifier = Modifier.padding(padding),
             )
             else -> LazyColumn(

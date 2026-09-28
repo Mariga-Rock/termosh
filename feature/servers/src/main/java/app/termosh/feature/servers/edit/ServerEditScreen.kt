@@ -114,6 +114,24 @@ fun ServerEditScreen(
                 Switch(checked = state.useMosh, onCheckedChange = viewModel::setUseMosh)
             }
 
+            if (state.useMosh) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Постоянные сессии (tmux)")
+                        Text(
+                            "Сессия живёт на сервере, переживает закрытие приложения",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Switch(checked = state.useTmux, onCheckedChange = viewModel::setUseTmux)
+                }
+            }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,

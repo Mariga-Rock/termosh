@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.SettingsEthernet
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -117,8 +118,11 @@ fun ForwardsScreen(
         when {
             state.loading -> CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(padding))
             state.forwards.isEmpty() -> EmptyState(
+                icon = Icons.Default.SettingsEthernet,
                 title = "Туннелей нет",
-                subtitle = "Нажми + чтобы добавить. Проброс 127.0.0.1:порт → удалённый хост:порт",
+                subtitle = "Туннель пробрасывает локальный порт через SSH на удалённый хост. " +
+                    "Например, localhost:8080 → localhost:80 на сервере — " +
+                    "чтобы открыть админку в браузере телефона.",
                 modifier = Modifier.padding(padding),
             )
             else -> LazyColumn(

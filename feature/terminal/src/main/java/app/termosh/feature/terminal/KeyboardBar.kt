@@ -41,6 +41,10 @@ fun KeyboardBar(
     modifiers: Set<String>,
     onKey: (String) -> Unit,
     onToggleModifier: (String) -> Unit,
+    onHistoryPrev: () -> Unit = {},
+    onHistoryNext: () -> Unit = {},
+    onCopyResponse: () -> Unit = {},
+    showPersonalKeys: Boolean = false,
 ) {
     Row(
         modifier = Modifier

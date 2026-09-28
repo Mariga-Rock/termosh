@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.CloudUpload
@@ -34,6 +35,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -41,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.termosh.core.ui.theme.TermoshThemeOption
+import app.termosh.core.ui.component.ProFeatureDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +57,15 @@ fun SettingsScreen(
     onOpenExports: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
+    var proFeaturePrompt by remember { mutableStateOf<String?>(null) }
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    proFeaturePrompt?.let { name ->
+        ProFeatureDialog(
+            featureName = name,
+            onDismiss = { proFeaturePrompt = null },
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -80,11 +93,14 @@ fun SettingsScreen(
             // === Тема ===
             SectionTitle("Внешний вид")
             TermoshThemeOption.values().forEach { option ->
+                val locked = !state.isPro && option != TermoshThemeOption.TOKYO_NIGHT
                 ThemeRow(
                     label = option.displayName,
                     value = option,
                     selected = state.theme,
-                    onSelect = viewModel::setTheme,
+                    locked = locked,
+                    onSelect = { if (!locked) viewModel.setTheme(it) },
+                    onLockedClick = { proFeaturePrompt = "Тема ${option.displayName}" },
                 )
             }
 
@@ -243,16 +259,34 @@ private fun ThemeRow(
     label: String,
     value: TermoshThemeOption,
     selected: TermoshThemeOption,
+    locked: Boolean = false,
     onSelect: (TermoshThemeOption) -> Unit,
+    onLockedClick: () -> Unit = {},
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .selectable(selected = value == selected, onClick = { onSelect(value) })
+            .selectable(
+                selected = !locked && value == selected,
+                onClick = { if (locked) onLockedClick() else onSelect(value) },
+            )
             .padding(horizontal = 16.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        RadioButton(selected = value == selected, onClick = { onSelect(value) })
-        Text(label, modifier = Modifier.padding(start = 8.dp))
+        if (locked) {
+            Icon(
+                imageVector = Icons.Default.Lock,
+                contentDescription = "Pro",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        } else {
+            RadioButton(selected = value == selected, onClick = { onSelect(value) })
+        }
+        Text(
+            text = label,
+            modifier = Modifier.padding(start = 8.dp),
+            color = if (locked) MaterialTheme.colorScheme.onSurfaceVariant
+                    else MaterialTheme.colorScheme.onSurface,
+        )
     }
 }

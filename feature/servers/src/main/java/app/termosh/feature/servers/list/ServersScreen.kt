@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.termosh.core.ui.component.EmptyState
+import app.termosh.core.ui.component.ProFeatureDialog
 import app.termosh.core.ui.component.TermoshLoader
 import app.termosh.domain.model.Server
 import sh.calvin.reorderable.ReorderableItem
@@ -84,6 +85,7 @@ fun ServersScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var menuOpen by remember { mutableStateOf(false) }
+    var proFeaturePrompt by remember { mutableStateOf<String?>(null) }
 
     if (state.showLimitDialog) {
         AlertDialog(
@@ -104,6 +106,13 @@ fun ServersScreen(
             dismissButton = {
                 TextButton(onClick = { viewModel.dismissLimitDialog() }) { Text("Позже") }
             },
+        )
+    }
+
+    proFeaturePrompt?.let { feature ->
+        ProFeatureDialog(
+            featureName = feature,
+            onDismiss = { proFeaturePrompt = null },
         )
     }
 
@@ -204,9 +213,9 @@ fun ServersScreen(
 
             when {
                 state.loading -> TermoshLoader()
-                state.servers.isEmpty() && state.query.isBlank() -> EmptyState(
-                    title = "No servers yet",
-                    subtitle = "Tap + to add your first SSH server",
+                state.servers.isEmpty() && state.query.isBlank() -> FirstRunWelcome(
+                    onImport = onOpenImport,
+                    onAddManual = onAddServer,
                 )
                 state.servers.isEmpty() -> EmptyState(
                     title = "Ничего не найдено",
@@ -223,6 +232,8 @@ fun ServersScreen(
                     ReorderableServersList(
                         items = items,
                         forwardsByServer = state.forwardsByServer,
+                        isPro = state.isPro,
+                        onProRequired = { feature -> proFeaturePrompt = feature },
                         reorderEnabled = state.reorderEnabled,
                         onReorder = { viewModel.onReorder(it.toList()) },
                         onConnect = { onConnectServer(it.id) },
@@ -250,6 +261,8 @@ private fun SectionHeader(text: String) {
 private fun ReorderableServersList(
     items: SnapshotStateList<Server>,
     forwardsByServer: Map<String, Boolean>,
+    isPro: Boolean,
+    onProRequired: (String) -> Unit,
     reorderEnabled: Boolean,
     onReorder: (List<Server>) -> Unit,
     onConnect: (Server) -> Unit,
@@ -274,6 +287,8 @@ private fun ReorderableServersList(
                 ServerRow(
                     server = server,
                     hasForwards = forwardsByServer[server.id] == true,
+                    isPro = isPro,
+                    onProRequired = onProRequired,
                     isDragging = isDragging,
                     showDragHandle = reorderEnabled,
                     dragHandle = {
@@ -303,6 +318,8 @@ private fun ReorderableServersList(
 private fun ServerRow(
     server: Server,
     hasForwards: Boolean,
+    isPro: Boolean,
+    onProRequired: (String) -> Unit,
     isDragging: Boolean,
     showDragHandle: Boolean,
     dragHandle: @Composable () -> Unit,
@@ -386,13 +403,25 @@ private fun ServerRow(
                     )
                     DropdownMenuItem(
                         text = { Text("SFTP") },
-                        leadingIcon = { Icon(Icons.Default.Folder, contentDescription = null) },
-                        onClick = { menuOpen = false; onSftp() },
+                        leadingIcon = {
+                            if (isPro) Icon(Icons.Default.Folder, contentDescription = null)
+                            else Icon(Icons.Default.Lock, contentDescription = "Pro")
+                        },
+                        onClick = {
+                            menuOpen = false
+                            if (isPro) onSftp() else onProRequired("SFTP")
+                        },
                     )
                     DropdownMenuItem(
                         text = { Text("Туннели") },
-                        leadingIcon = { Icon(Icons.Default.Settings, contentDescription = null) },
-                        onClick = { menuOpen = false; onForwards() },
+                        leadingIcon = {
+                            if (isPro) Icon(Icons.Default.Settings, contentDescription = null)
+                            else Icon(Icons.Default.Lock, contentDescription = "Pro")
+                        },
+                        onClick = {
+                            menuOpen = false
+                            if (isPro) onForwards() else onProRequired("Туннели")
+                        },
                     )
                 }
             }

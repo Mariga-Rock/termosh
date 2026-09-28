@@ -15,9 +15,21 @@ android {
     namespace = "app.termosh"
 
     defaultConfig {
+        flavorDimensions += "edition"
         applicationId = "app.termosh"
         versionCode = 1
         versionName = "0.1.0"
+    }
+
+    productFlavors {
+        create("public") {
+            dimension = "edition"
+        }
+        create("personal") {
+            dimension = "edition"
+            applicationIdSuffix = ".personal"
+            versionNameSuffix = "-personal"
+        }
     }
 
     signingConfigs {
@@ -53,6 +65,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 

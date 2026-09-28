@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -104,8 +105,10 @@ fun SnippetsListScreen(
         when {
             state.loading -> CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(padding))
             state.snippets.isEmpty() -> EmptyState(
+                icon = Icons.Default.List,
                 title = "Сниппетов нет",
-                subtitle = "Нажми + чтобы добавить",
+                subtitle = "Сниппеты — команды, которые вы запускаете часто. " +
+                    "Создайте один и вставляйте его в терминал одним тапом.",
                 modifier = Modifier.padding(padding),
             )
             else -> LazyColumn(

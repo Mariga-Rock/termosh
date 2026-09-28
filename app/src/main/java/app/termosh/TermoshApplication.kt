@@ -12,10 +12,13 @@ import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import app.termosh.core.common.BuildFlags
 
 @HiltAndroidApp
 class TermoshApplication : Application() {
     override fun onCreate() {
+        BuildFlags.isPersonal = resources.getBoolean(R.bool.is_personal)
+
         installCrashLogger()
 
 

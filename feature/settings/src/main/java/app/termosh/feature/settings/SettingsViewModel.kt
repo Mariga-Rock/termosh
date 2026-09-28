@@ -3,6 +3,8 @@ package app.termosh.feature.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.termosh.core.datastore.SettingsDataStore
+import app.termosh.core.licensing.LicenseRepository
+import app.termosh.core.licensing.model.LicenseStatus
 import app.termosh.core.ui.theme.TermoshThemeOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,17 +17,25 @@ data class SettingsUiState(
     val theme: TermoshThemeOption = TermoshThemeOption.TOKYO_NIGHT,
     val logSessions: Boolean = false,
     val notifyOnFinish: Boolean = false,
+    val isPro: Boolean = false,
 )
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val store: SettingsDataStore,
+    licenseRepository: LicenseRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsUiState())
     val state: StateFlow<SettingsUiState> = _state.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            licenseRepository.status.collect { st ->
+                val pro = st is LicenseStatus.Activated
+                _state.value = _state.value.copy(isPro = pro)
+            }
+        }
         viewModelScope.launch {
             store.theme.collect { name ->
                 val t = runCatching { TermoshThemeOption.valueOf(name) }

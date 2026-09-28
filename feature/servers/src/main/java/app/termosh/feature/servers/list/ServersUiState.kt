@@ -11,7 +11,7 @@ data class ServersUiState(
     val loading: Boolean = true,
     val error: String? = null,
     val isPro: Boolean = false,
-    val freeLimit: Int = 3,
+    val freeLimit: Int = 5,
     val showLimitDialog: Boolean = false,
     val forwardsByServer: Map<String, Boolean> = emptyMap(),
 ) {

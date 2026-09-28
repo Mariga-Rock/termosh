@@ -20,6 +20,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Article
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -84,8 +85,10 @@ fun LogsScreen(
     ) { padding ->
         if (state.files.isEmpty()) {
             EmptyState(
+                icon = Icons.Default.Article,
                 title = "Логов нет",
-                subtitle = "Включи логирование в настройках и подключись к серверу",
+                subtitle = "Логи появляются, если включить логирование сессий " +
+                    "в Настройках → Диагностика, и подключиться к серверу.",
                 modifier = Modifier.padding(padding),
             )
         } else {

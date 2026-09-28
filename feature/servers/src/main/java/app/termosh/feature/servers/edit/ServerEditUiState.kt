@@ -11,6 +11,7 @@ data class ServerEditUiState(
     val tags: String = "",
     val proxyJumpId: String? = null,
     val useMosh: Boolean = false,
+    val useTmux: Boolean = false,
     val totpSecretId: String? = null,
     val useJumpCredentials: Boolean = false,
     val availableTotp: List<app.termosh.domain.model.TotpSecret> = emptyList(),

@@ -42,6 +42,8 @@ import java.io.InputStream
 import java.util.UUID
 import javax.inject.Inject
 import app.termosh.core.mosh.MoshProcess
+import android.content.ClipData
+import android.content.ClipboardManager
 
 @HiltViewModel
 class TerminalTabsViewModel @Inject constructor(
@@ -72,6 +74,10 @@ class TerminalTabsViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(TabsUiState())
     val state: StateFlow<TabsUiState> = _state.asStateFlow()
+
+    private val commandHistory = ArrayDeque<String>()
+    private var historyIndex = -1
+    private val lastOutputs = mutableMapOf<String, StringBuilder>()
 
     private val watchers = mutableMapOf<String, Job>()
     private val logFiles = mutableMapOf<String, File>()
@@ -112,6 +118,17 @@ class TerminalTabsViewModel @Inject constructor(
     }
 
     fun bufferFor(tabId: String) = buffers.get(tabId)
+
+    private fun appendOutput(tabId: String, text: String) {
+        appendOutput(tabId, text)
+        synchronized(lastOutputs) {
+            val sb = lastOutputs.getOrPut(tabId) { StringBuilder() }
+            sb.append(text)
+            if (sb.length > 524_288) {
+                sb.delete(0, sb.length - 524_288)
+            }
+        }
+    }
     fun openPicker() {
         AppLogger.i("openPicker: availableServers=${_state.value.availableServers.size}, tabs=${_state.value.tabs.size}")
         _state.value = _state.value.copy(showPicker = true)
@@ -175,6 +192,7 @@ class TerminalTabsViewModel @Inject constructor(
                             columns = 80,
                             lines = 24,
                             sshPort = server.port,
+                        useTmux = server.useTmux,
                         )
                         moshController.register(tabId, mosh)
                         buffers.get(tabId).write("mosh connected (UDP ${mosh.udpPort}).\n\n")
@@ -190,7 +208,7 @@ class TerminalTabsViewModel @Inject constructor(
                         startMoshStateWatcher(tabId, mosh)
                         runStartupScript(server, tabId)
                     } catch (t: Throwable) {
-                        buffers.get(tabId).write("mosh ERROR: ${t.message}\n")
+                        buffers.get(tabId).write("mosh ERROR: ${ErrorHumanizer.humanize(t)}\n")
                         buffers.get(tabId).write("Откат на обычный SSH...\n\n")
                         session.startShellOnExisting()
                         _state.value = _state.value.copy(
@@ -234,18 +252,13 @@ class TerminalTabsViewModel @Inject constructor(
                     runStartupScript(server, tabId)
                 }
             } catch (t: Throwable) {
-                val full = buildString {
-                    append("ERROR: ").append(t.javaClass.name)
-                        .append(": ").append(t.message ?: "(no message)").append("\n")
-                    val sw = java.io.StringWriter()
-                    t.printStackTrace(java.io.PrintWriter(sw))
-                    append(sw.toString()).append("\n")
-                }
-                buffers.get(tabId).write(full)
+                val human = ErrorHumanizer.humanize(t)
+                app.termosh.core.common.AppLogger.e("SSH connect failed: ${t.message}", t)
+                buffers.get(tabId).write("\nERROR: $human\n\n")
                 _state.value = _state.value.copy(
-        tabStatuses = _state.value.tabStatuses + (tabId to TabStatus(TerminalConnectionState.ERROR, t.message ?: t.javaClass.simpleName)),
+        tabStatuses = _state.value.tabStatuses + (tabId to TabStatus(TerminalConnectionState.ERROR, human)),
                     connectionState = TerminalConnectionState.ERROR,
-                    statusMessage = t.message ?: t.javaClass.simpleName,
+                    statusMessage = human,
                 )
             }
         }
@@ -261,7 +274,7 @@ class TerminalTabsViewModel @Inject constructor(
                     val n = input.read(buf)
                     if (n < 0) break
                     val text = String(buf, 0, n, Charsets.UTF_8)
-                    buffers.get(tabId).write(text)
+                    appendOutput(tabId, text)
 logFiles[tabId]?.let { logger.append(it, text) }
                 }
             } catch (_: Throwable) {
@@ -296,7 +309,7 @@ logFiles[tabId]?.let { logger.append(it, text) }
         watchers[tabId] = viewModelScope.launch {
             launch {
                 session.output.collect { text ->
-                    buffers.get(tabId).write(text)
+                    appendOutput(tabId, text)
 logFiles[tabId]?.let { logger.append(it, text) }
                 }
             }
@@ -463,6 +476,67 @@ _state.value = _state.value.copy(tabStatuses = _state.value.tabStatuses - tabId)
     fun sendSpace() = sendText(" ")
 
     fun sendRawKey(seq: String) = sendText(seq)
+
+    fun submitCommand(text: String) {
+        val id = activeSendTabId() ?: return
+        val bytes = (text + "\r").toByteArray(Charsets.UTF_8)
+        if (moshController.has(id)) {
+            moshController.write(id, bytes)
+        } else {
+            sessions.get(id)?.write(bytes)
+        }
+        if (text.isNotBlank()) {
+            commandHistory.remove(text)
+            commandHistory.addFirst(text)
+            while (commandHistory.size > 50) commandHistory.removeLast()
+            historyIndex = -1
+        }
+        synchronized(lastOutputs) { lastOutputs[id]?.clear() }
+        _state.value = _state.value.copy(input = "", modifiers = emptySet())
+    }
+
+    fun historyPrev() {
+        if (commandHistory.isEmpty()) return
+        historyIndex = (historyIndex + 1).coerceAtMost(commandHistory.size - 1)
+        val cmd = commandHistory.elementAt(historyIndex)
+        _state.value = _state.value.copy(pendingInput = cmd)
+    }
+
+    fun historyNext() {
+        if (commandHistory.isEmpty()) return
+        if (historyIndex <= 0) {
+            historyIndex = -1
+            _state.value = _state.value.copy(pendingInput = "")
+            return
+        }
+        historyIndex -= 1
+        val cmd = commandHistory.elementAt(historyIndex)
+        _state.value = _state.value.copy(pendingInput = cmd)
+    }
+
+    fun consumePendingInput() {
+        _state.value = _state.value.copy(pendingInput = null)
+    }
+
+    fun copyLastResponseToClipboard(): Boolean {
+        val id = _state.value.activeTabId ?: return false
+        val raw = synchronized(lastOutputs) { lastOutputs[id]?.toString() } ?: return false
+        val clean = stripAnsi(raw).trim()
+        if (clean.isBlank()) return false
+        val cm = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        cm.setPrimaryClip(ClipData.newPlainText("termosh-response", clean))
+        return true
+    }
+
+    private fun stripAnsi(input: String): String {
+        var r = input
+        r = r.replace(Regex("\u001B\\[[0-?]*[ -/]*[@-~]"), "")
+        r = r.replace(Regex("\u001B\\][^\u0007\u001B]*(\u0007|\u001B\\\\)"), "")
+        r = r.replace(Regex("\u001B[@-Z\\\\-_]"), "")
+        r = r.replace("\r", "")
+        r = r.replace(Regex("[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]"), "")
+        return r
+    }
 
     fun submitInput() {
         val id = activeSendTabId() ?: return

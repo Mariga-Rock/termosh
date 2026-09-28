@@ -86,6 +86,7 @@ import app.termosh.core.terminal.TerminalView
 import kotlin.math.abs
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.platform.LocalContext
+import app.termosh.core.common.BuildFlags
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -482,16 +483,21 @@ fun TerminalScreen(
                 modifiers = state.modifiers,
                 onKey = { viewModel.sendRawKey(it) },
                 onToggleModifier = { viewModel.toggleModifier(it) },
+                onHistoryPrev = { viewModel.historyPrev() },
+                onHistoryNext = { viewModel.historyNext() },
+                onCopyResponse = { viewModel.copyLastResponseToClipboard() },
+                showPersonalKeys = BuildFlags.isPersonal,
             )
 
             InstantInput(
                 enabled = state.connectionState == TerminalConnectionState.CONNECTED,
+                pendingInput = state.pendingInput,
+                onPendingConsumed = { viewModel.consumePendingInput() },
                 onChar = { viewModel.sendText(it) },
                 onBackspace = { viewModel.sendBackspace() },
                 onEnter = { viewModel.sendEnter() },
                 onSubmit = { text ->
-                    viewModel.sendText(text)
-                    viewModel.sendEnter()
+                    viewModel.submitCommand(text)
                 },
                 onPaste = { text -> viewModel.sendBracketedPaste(text) },
                 focusRequester = inputFocus,
@@ -503,6 +509,8 @@ fun TerminalScreen(
 @Composable
 private fun InstantInput(
     enabled: Boolean,
+    pendingInput: String? = null,
+    onPendingConsumed: () -> Unit = {},
     onChar: (String) -> Unit,
     onBackspace: () -> Unit,
     onEnter: () -> Unit,
@@ -511,6 +519,13 @@ private fun InstantInput(
     focusRequester: FocusRequester,
 ) {
     var value by remember { mutableStateOf(TextFieldValue("")) }
+
+    LaunchedEffect(pendingInput) {
+        if (pendingInput != null) {
+            value = TextFieldValue(pendingInput)
+            onPendingConsumed()
+        }
+    }
 
     Row(
         modifier = Modifier

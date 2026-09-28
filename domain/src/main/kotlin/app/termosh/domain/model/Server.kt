@@ -19,6 +19,7 @@ data class Server(
     val tags: List<String>,
     val createdAt: Long,
     val useMosh: Boolean = false,
+    val useTmux: Boolean = false,
     val totpSecretId: String? = null,
     val useJumpCredentials: Boolean = false,
     val startupCommands: List<String> = emptyList(),

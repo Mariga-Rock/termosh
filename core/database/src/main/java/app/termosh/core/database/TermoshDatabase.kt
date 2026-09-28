@@ -27,7 +27,7 @@ import app.termosh.core.database.entity.TotpEntity
         PortForwardEntity::class,
         TotpEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = false,
 )
 abstract class TermoshDatabase : RoomDatabase() {

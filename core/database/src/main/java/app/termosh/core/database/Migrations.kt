@@ -12,6 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
  *  - 3: + расширенные поля servers (useMosh, totpSecretId, startupCommands,
  *        envVars, envSecrets, useJumpCredentials) (внутренняя alpha)
  *  - 4: + known_hosts_hashed
+ *  - 5: + servers.useTmux (постоянные сессии)
  *
  * Версии 1–3 — pre-release alpha, никогда не публиковались. Для них
  * разрешён destructive fallback (см. fallbackToDestructiveMigrationFrom).
@@ -37,5 +38,11 @@ object Migrations {
         }
     }
 
-    val ALL = arrayOf(MIGRATION_3_4)
+    val MIGRATION_4_5 = object : Migration(4, 5) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `servers` ADD COLUMN `useTmux` INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
+    val ALL = arrayOf(MIGRATION_3_4, MIGRATION_4_5)
 }

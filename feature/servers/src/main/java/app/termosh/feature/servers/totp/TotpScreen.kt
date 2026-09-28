@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -148,8 +149,10 @@ fun TotpScreen(
         when {
             state.loading -> CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(padding))
             state.items.isEmpty() -> EmptyState(
-                title = "Нет TOTP-секретов",
-                subtitle = "Нажми + чтобы добавить base32-секрет",
+                icon = Icons.Default.Security,
+                title = "TOTP-секретов нет",
+                subtitle = "Секреты для двухфакторной аутентификации хранятся локально, " +
+                    "в зашифрованном виде. Добавьте base32-секрет из настроек 2FA.",
                 modifier = Modifier.padding(padding),
             )
             else -> LazyColumn(

@@ -71,6 +71,7 @@ class ServerEditViewModel @Inject constructor(
             tags = server.tags.joinToString(", "),
             proxyJumpId = server.proxyJumpId,
             useMosh = server.useMosh,
+            useTmux = server.useTmux,
             totpSecretId = server.totpSecretId,
             useJumpCredentials = server.useJumpCredentials,
             startupCommandsText = server.startupCommands.joinToString("\n"),
@@ -96,6 +97,7 @@ class ServerEditViewModel @Inject constructor(
     fun setTags(v: String) = update { it.copy(tags = v) }
     fun setProxyJump(id: String?) = update { it.copy(proxyJumpId = id) }
     fun setUseMosh(v: Boolean) = update { it.copy(useMosh = v) }
+    fun setUseTmux(v: Boolean) = update { it.copy(useTmux = v) }
     fun setTotpSecret(id: String?) = update { it.copy(totpSecretId = id) }
     fun setUseJumpCredentials(v: Boolean) = update { it.copy(useJumpCredentials = v) }
     fun setStartupCommandsText(v: String) = update { it.copy(startupCommandsText = v) }
@@ -136,6 +138,7 @@ class ServerEditViewModel @Inject constructor(
                     createdAt = System.currentTimeMillis(),
                     lastUsedAt = null,
                     useMosh = s.useMosh,
+                    useTmux = s.useTmux,
                     totpSecretId = s.totpSecretId,
                     useJumpCredentials = s.useJumpCredentials,
                     startupCommands = parseStartup(s.startupCommandsText),
