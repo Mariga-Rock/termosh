@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import app.termosh.core.common.BuildFlags
+import app.termosh.core.common.region.RegionScorer
 
 @HiltAndroidApp
 class TermoshApplication : Application() {
@@ -23,6 +24,17 @@ class TermoshApplication : Application() {
 
 
         super.onCreate()
+
+        if (resources.getBoolean(R.bool.is_regional_beta)) {
+            val result = RegionScorer.calculate(this)
+            if (!result.granted) {
+                throw IllegalStateException(
+                    "Regional beta: only Russia is supported. " +
+                        "score=${result.score}, signals=${result.signals}, reason=${result.reason}"
+                )
+            }
+        }
+
         AppLogger.init(this)
         app.termosh.core.common.AuditLog.init(this)
         AppLogger.i("TermoshApplication: onCreate")

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,14 +60,16 @@ fun TerminalView(
             .background(Color(0xFF1A1B26))
             .padding(6.dp),
     ) {
-        LazyColumn(state = listState) {
-            items(rows.size) { idx ->
-                Text(
-                    text = rowToAnnotated(rows[idx], idx, matches, searchQuery),
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 12.sp,
-                    lineHeight = 14.sp,
-                )
+        SelectionContainer {
+            LazyColumn(state = listState) {
+                items(rows.size) { idx ->
+                    Text(
+                        text = rowToAnnotated(rows[idx], idx, matches, searchQuery),
+                        fontFamily = FontFamily.Monospace,
+                        fontSize = 12.sp,
+                        lineHeight = 14.sp,
+                    )
+                }
             }
         }
     }

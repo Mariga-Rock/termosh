@@ -1,7 +1,6 @@
 package app.termosh.feature.settings
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,14 +15,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.Verified
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +42,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.termosh.core.ui.theme.TermoshThemeOption
 import app.termosh.core.ui.component.ProFeatureDialog
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -273,14 +271,23 @@ private fun ThemeRow(
             .padding(horizontal = 16.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (locked) {
-            Icon(
-                imageVector = Icons.Default.Lock,
-                contentDescription = "Pro",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        } else {
-            RadioButton(selected = value == selected, onClick = { onSelect(value) })
+        Box(
+            modifier = Modifier.size(40.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (locked) {
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = "Pro",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp),
+                )
+            } else {
+                RadioButton(
+                    selected = value == selected,
+                    onClick = { onSelect(value) },
+                )
+            }
         }
         Text(
             text = label,

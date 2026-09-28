@@ -30,6 +30,11 @@ android {
             applicationIdSuffix = ".personal"
             versionNameSuffix = "-personal"
         }
+        create("beta") {
+            dimension = "edition"
+            applicationIdSuffix = ".beta"
+            versionNameSuffix = "-beta"
+        }
     }
 
     signingConfigs {

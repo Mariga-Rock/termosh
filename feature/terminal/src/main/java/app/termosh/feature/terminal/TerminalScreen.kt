@@ -84,7 +84,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.termosh.core.terminal.TerminalView
 import kotlin.math.abs
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.platform.LocalContext
 import app.termosh.core.common.BuildFlags
 
@@ -440,7 +439,7 @@ fun TerminalScreen(
                                     runCatching { inputFocus.requestFocus() }
                                 },
                         ) {
-                            TerminalView(buffer = bufferA, searchQuery = searchQuery, modifier = Modifier.fillMaxSize().pointerInput(Unit) { detectTapGestures(onDoubleTap = { _ -> __onDoubleTap() }) })
+                            TerminalView(buffer = bufferA, searchQuery = searchQuery, modifier = Modifier.fillMaxSize().pointerInput(Unit) { detectDoubleTapOnly { __onDoubleTap() } })
                         }
                         Box(
                             Modifier
@@ -457,14 +456,14 @@ fun TerminalScreen(
                                     runCatching { inputFocus.requestFocus() }
                                 },
                         ) {
-                            TerminalView(buffer = bufferB, searchQuery = searchQuery, modifier = Modifier.fillMaxSize().pointerInput(Unit) { detectTapGestures(onDoubleTap = { _ -> __onDoubleTap() }) })
+                            TerminalView(buffer = bufferB, searchQuery = searchQuery, modifier = Modifier.fillMaxSize().pointerInput(Unit) { detectDoubleTapOnly { __onDoubleTap() } })
                         }
                     }
                 }
             } else {
                 val activeBuffer = state.activeTabId?.let { viewModel.bufferFor(it) }
                 if (activeBuffer != null) {
-                    TerminalView(buffer = activeBuffer, searchQuery = searchQuery, modifier = mainModifier.pointerInput(Unit) { detectTapGestures(onDoubleTap = { _ -> __onDoubleTap() }) })
+                    TerminalView(buffer = activeBuffer, searchQuery = searchQuery, modifier = mainModifier.pointerInput(Unit) { detectDoubleTapOnly { __onDoubleTap() } })
                 } else {
                     Text(
                         "No active session. Tap + to open.",
