@@ -42,8 +42,8 @@ android {
             isMinifyEnabled = false
         }
         getByName("release") {
-            isMinifyEnabled = false  // TEMP: проверка R8
-            isShrinkResources = false  // TEMP: проверка R8
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

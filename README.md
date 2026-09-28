@@ -64,4 +64,6 @@ SQLCipher.
 
 ## Лицензия
 
-MIT — см. [LICENSE](LICENSE).
+Проприетарная. См. [LICENSE](LICENSE).
+
+Исходный код не распространяется.

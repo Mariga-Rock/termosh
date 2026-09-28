@@ -1,21 +1,39 @@
-MIT License
+Copyright (c) 2026 Termosh. All rights reserved.
 
-Copyright (c) 2026 Termosh
+PROPRIETARY SOFTWARE
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This software and associated documentation files (the "Software") are the
+exclusive property of the copyright holder. The Software is provided to end
+users under the following terms:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. GRANT OF LICENSE.
+   You are granted a limited, non-exclusive, non-transferable, revocable
+   license to install and use the compiled application on devices you own
+   or control, solely for personal or internal business purposes.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. RESTRICTIONS.
+   You may NOT:
+   - copy, modify, merge, publish, distribute, sublicense, or sell copies
+     of the Software or any portion thereof;
+   - reverse engineer, decompile, or disassemble the Software, except to
+     the extent expressly permitted by applicable law;
+   - remove or alter any copyright, trademark, or other proprietary
+     notices from the Software;
+   - use the Software to develop a competing product.
+
+3. NO SOURCE CODE.
+   No source code is provided, licensed, or implied. Possession of the
+   compiled application does not grant any rights to the source code.
+
+4. NO WARRANTY.
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+5. LIMITATION OF LIABILITY.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+For licensing inquiries, contact the copyright holder.
